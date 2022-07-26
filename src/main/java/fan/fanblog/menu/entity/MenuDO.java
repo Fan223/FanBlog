@@ -1,12 +1,11 @@
-package fan.fanblog.vo;
+package fan.fanblog.menu.entity;
 
 import lombok.Data;
 
 import java.io.Serializable;
 
 @Data
-public class BlogVO implements Serializable {
-
+public class MenuDO implements Serializable {
     private static final long serialVersionUID = -1L;
 
     private Integer id;

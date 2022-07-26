@@ -1,6 +1,6 @@
-package fan.fanblog.service;
+package fan.fanblog.blog.service;
 
-import fan.fanblog.vo.BlogVO;
+import fan.fanblog.blog.vo.BlogVO;
 
 import java.util.List;
 

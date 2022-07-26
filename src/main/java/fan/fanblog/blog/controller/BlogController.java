@@ -1,15 +1,14 @@
-package fan.fanblog.controller;
+package fan.fanblog.blog.controller;
 
-import fan.fanblog.service.BlogService;
+import fan.fanblog.blog.service.BlogService;
 import fan.fanblog.utils.BlogResult;
-import fan.fanblog.vo.BlogVO;
+import fan.fanblog.blog.vo.BlogVO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @RestController
 public class BlogController {

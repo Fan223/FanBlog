@@ -1,11 +1,11 @@
-package fan.fanblog.service.impl;
+package fan.fanblog.blog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import fan.fanblog.dao.BlogDAO;
-import fan.fanblog.entity.BlogDO;
-import fan.fanblog.service.BlogService;
+import fan.fanblog.blog.dao.BlogDAO;
+import fan.fanblog.blog.entity.BlogDO;
+import fan.fanblog.blog.service.BlogService;
 import fan.fanblog.utils.MapStruct;
-import fan.fanblog.vo.BlogVO;
+import fan.fanblog.blog.vo.BlogVO;
 
 import javax.annotation.Resource;
 import java.util.List;
