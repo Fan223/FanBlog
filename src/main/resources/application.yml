@@ -1,2 +1,16 @@
 server:
   port: 8001
+  servlet:
+    context-path: /fanBlog
+spring:
+  datasource:
+    druid:
+      url: jdbc:mysql://124.222.118.90:3306/blog?connectTimeout=5000&socketTimeout=10000&autoReconnect=true&failOverReadOnly=false&useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+      username: root
+      password: fan223
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**Mapper.xml
+  configuration:
+    local-cache-scope: statement
