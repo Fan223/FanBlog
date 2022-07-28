@@ -35,7 +35,7 @@ public class MenuServiceImpl implements MenuService {
 
         for (MenuVO parent : menuVOS) {
             for (MenuVO child : menuVOS) {
-                if (child.getParentId() == parent.getMenuId()) {
+                if (child.getParentId().equals(parent.getMenuId())) {
                     parent.getChildren().add(child);
                 }
             }

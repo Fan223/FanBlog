@@ -14,12 +14,12 @@ public class BlogController {
     @Resource
     private BlogService blogService;
 
-    @GetMapping("/blog/queryAllBlog")
+    @GetMapping("/queryAllBlog")
     public BlogResult queryAllBlog() {
         return BlogResult.success(blogService.queryAllBlog());
     }
 
-    @PostMapping("/blog/addBlog")
+    @PostMapping("/addBlog")
     public BlogResult add(@RequestBody BlogVO blogVO) {
         return BlogResult.success(blogService.addBlog(blogVO));
     }

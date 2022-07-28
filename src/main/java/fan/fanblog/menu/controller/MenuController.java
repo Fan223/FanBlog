@@ -14,12 +14,12 @@ public class MenuController {
     @Resource
     private MenuService menuService;
 
-    @GetMapping("/blog/queryAllMenu")
+    @GetMapping("/queryAllMenu")
     public BlogResult queryAllBlog() {
         return BlogResult.success(menuService.queryAllMenu());
     }
 
-    @PostMapping("/blog/addMenu")
+    @PostMapping("/addMenu")
     public BlogResult add(@RequestBody MenuVO menuVO) {
         return BlogResult.success(menuService.addMenu(menuVO));
     }

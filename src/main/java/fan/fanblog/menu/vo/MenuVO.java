@@ -4,6 +4,7 @@ import fan.fanblog.menu.entity.MenuDO;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -24,5 +25,5 @@ public class MenuVO implements Serializable {
     private java.sql.Timestamp createTime; // 创建时间
     private java.sql.Timestamp updateTime; // 更新时间
 
-    private List<MenuVO> children;
+    private List<MenuVO> children = new ArrayList<>();
 }
