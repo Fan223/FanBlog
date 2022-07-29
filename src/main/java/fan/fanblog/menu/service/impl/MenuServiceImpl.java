@@ -1,15 +1,19 @@
 package fan.fanblog.menu.service.impl;
 
+import cn.hutool.core.lang.UUID;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import fan.fanblog.menu.dao.MenuDAO;
 import fan.fanblog.menu.entity.MenuDO;
 import fan.fanblog.menu.service.MenuService;
 import fan.fanblog.menu.vo.MenuVO;
 import fan.fanblog.utils.MapStruct;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,8 +53,18 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public int addMenu(MenuVO menuVO) {
+        MenuDO menuDO = MapStruct.INSTANCE.MenuVOToMenuDO(menuVO);
 
-        return menuDAO.insert(MapStruct.INSTANCE.MenuVOToMenuDO(menuVO));
+        menuDO.setMenuId(UUID.randomUUID().toString());
+        menuDO.setValiFlag(1);
+        menuDO.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
+        menuDO.setUpdateTime(Timestamp.valueOf(LocalDateTime.now()));
+
+        if (StringUtils.isBlank(menuDO.getParentId())) {
+            menuDO.setParentId("0");
+        }
+
+        return menuDAO.insert(menuDO);
     }
 
 

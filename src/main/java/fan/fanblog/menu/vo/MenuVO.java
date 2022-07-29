@@ -18,12 +18,12 @@ public class MenuVO implements Serializable {
     private String path; // 菜单路径
     private String permission; // 权限字符串
     private String component; // 组件名称
-    private long type; // 类型
+    private int type; // 类型
     private String icon; // 图标
-    private long orderNum; // 排序号
-    private long valiFlag; // 有效标志
-    private java.sql.Timestamp createTime; // 创建时间
-    private java.sql.Timestamp updateTime; // 更新时间
+    private int orderNum; // 排序号
+    private int valiFlag; // 有效标志
+    private String createTimeVO; // 创建时间
+    private String updateTimeVO; // 更新时间
 
     private List<MenuVO> children = new ArrayList<>();
 }
