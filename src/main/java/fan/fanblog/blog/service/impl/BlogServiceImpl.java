@@ -1,5 +1,6 @@
 package fan.fanblog.blog.service.impl;
 
+import cn.hutool.core.lang.UUID;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import fan.fanblog.blog.dao.BlogDAO;
@@ -10,6 +11,8 @@ import fan.fanblog.blog.vo.BlogVO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,9 +34,11 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
 
     @Override
     public int addBlog(BlogVO blogVO) {
+        BlogDO blogDO = MapStruct.INSTANCE.BlogVOToBlogDO(blogVO);
 
-        return blogDAO.insert(MapStruct.INSTANCE.BlogVOToBlogDO(blogVO));
+        blogDO.setBlogId(UUID.randomUUID().toString());
+        blogDO.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
+        blogDO.setUpdateTime(Timestamp.valueOf(LocalDateTime.now()));
+        return blogDAO.insert(blogDO);
     }
-
-
 }

@@ -8,9 +8,8 @@ import java.text.SimpleDateFormat;
 
 @Component
 public class MapStructRule {
-
     @Named("toDate")
-    public String toDate(Timestamp date) {
+    public static String toDate(Timestamp date) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return simpleDateFormat.format(date);
     }

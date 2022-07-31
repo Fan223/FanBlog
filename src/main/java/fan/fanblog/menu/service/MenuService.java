@@ -8,4 +8,8 @@ public interface MenuService {
     List<MenuVO> queryAllMenu();
 
     int addMenu(MenuVO blogVO);
+
+    int editMenu(MenuVO menuVO);
+
+    int deleteMenu(MenuVO menuVO);
 }

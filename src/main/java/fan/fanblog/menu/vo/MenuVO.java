@@ -14,6 +14,7 @@ public class MenuVO implements Serializable {
 
     private String menuId; // 菜单ID
     private String parentId; // 父菜单ID
+    private String parentName; // 父菜单名称
     private String menuName; // 菜单名称
     private String path; // 菜单路径
     private String permission; // 权限字符串
@@ -22,8 +23,8 @@ public class MenuVO implements Serializable {
     private String icon; // 图标
     private int orderNum; // 排序号
     private int valiFlag; // 有效标志
-    private String createTimeVO; // 创建时间
-    private String updateTimeVO; // 更新时间
+    private String createTime; // 创建时间
+    private String updateTime; // 更新时间
 
     private List<MenuVO> children = new ArrayList<>();
 }

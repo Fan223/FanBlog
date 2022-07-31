@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 @Data
 @TableName("menu")
@@ -24,6 +25,6 @@ public class MenuDO implements Serializable {
   private String icon; // 图标
   private int orderNum; // 排序号
   private int valiFlag; // 有效标志
-  private java.sql.Timestamp createTime; // 创建时间
-  private java.sql.Timestamp updateTime; // 更新时间
+  private Timestamp createTime; // 创建时间
+  private Timestamp updateTime; // 更新时间
 }

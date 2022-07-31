@@ -10,17 +10,21 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring", uses = MapStructRule.class) // 整合 Spring，设置 componentModel = "spring"，需要使用的地方直接通过 @Resource 注入即可
 public interface MapStruct {
-
     MapStruct INSTANCE = Mappers.getMapper(MapStruct.class);
 
+    @Mapping(target = "createTime", source = "createTime", qualifiedByName = "toDate")
+    @Mapping(target = "updateTime", source = "updateTime", qualifiedByName = "toDate")
     BlogVO BlogDOToBlogVO(BlogDO blogDO);
 
+    @Mapping(target = "createTime", ignore = true)
+    @Mapping(target = "updateTime", ignore = true)
     BlogDO BlogVOToBlogDO(BlogVO blogVO);
 
-    @Mapping(source = "createTime", target = "createTimeVO", qualifiedByName = "toDate")
-    @Mapping(source = "updateTime", target = "updateTimeVO", qualifiedByName = "toDate")
+    @Mapping(target = "createTime", source = "createTime", qualifiedByName = "toDate")
+    @Mapping(target = "updateTime", source = "updateTime", qualifiedByName = "toDate")
     MenuVO MenuDOToMenuVO(MenuDO menuDO);
 
-
+    @Mapping(target = "createTime", ignore = true)
+    @Mapping(target = "updateTime", ignore = true)
     MenuDO MenuVOToMenuDO(MenuVO menuVO);
 }

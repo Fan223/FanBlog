@@ -20,7 +20,17 @@ public class MenuController {
     }
 
     @PostMapping("/addMenu")
-    public BlogResult add(@RequestBody MenuVO menuVO) {
+    public BlogResult addMenu(@RequestBody MenuVO menuVO) {
         return BlogResult.success(menuService.addMenu(menuVO));
+    }
+
+    @PutMapping("/editMenu")
+    public BlogResult editMenu(@RequestBody MenuVO menuVO) {
+        return BlogResult.success(menuService.editMenu(menuVO));
+    }
+
+    @DeleteMapping("/deleteMenu")
+    public BlogResult deleteMenu(@RequestBody MenuVO menuVO) {
+        return BlogResult.success(menuService.deleteMenu(menuVO));
     }
 }

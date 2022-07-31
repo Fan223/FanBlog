@@ -1,19 +1,21 @@
 package test;
 
+import fan.fanblog.menu.entity.MenuDO;
+import fan.fanblog.menu.vo.MenuVO;
+import fan.fanblog.utils.MapStruct;
+import fan.fanblog.utils.MapStructRule;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import javax.annotation.Resource;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Demo {
     public static void main(String[] args) {
-        Person person = new Person("张三", new ArrayList<String>(){{
-            this.add("1");
-            this.add("2");
-        }});
-        person.getAge().add("3");
-        System.out.println(person);
     }
 }
 

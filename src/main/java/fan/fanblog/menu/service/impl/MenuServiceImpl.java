@@ -26,7 +26,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<MenuVO> queryAllMenu() {
-        List<MenuDO> blogDOS = menuDAO.selectList(new QueryWrapper<>());
+        List<MenuDO> blogDOS = menuDAO.selectList(new QueryWrapper<MenuDO>().orderByAsc("order_num"));
 
         List<MenuVO> menuVOS = blogDOS.stream().map(menuDO -> MapStruct.INSTANCE.MenuDOToMenuVO(menuDO))
                 .collect(Collectors.toList());
@@ -40,6 +40,7 @@ public class MenuServiceImpl implements MenuService {
         for (MenuVO parent : menuVOS) {
             for (MenuVO child : menuVOS) {
                 if (child.getParentId().equals(parent.getMenuId())) {
+                    child.setParentName(parent.getMenuName());
                     parent.getChildren().add(child);
                 }
             }
@@ -67,5 +68,15 @@ public class MenuServiceImpl implements MenuService {
         return menuDAO.insert(menuDO);
     }
 
+    @Override
+    public int editMenu(MenuVO menuVO) {
+        MenuDO menuDO = MapStruct.INSTANCE.MenuVOToMenuDO(menuVO);
+        menuDO.setUpdateTime(Timestamp.valueOf(LocalDateTime.now()));
+        return menuDAO.updateById(menuDO);
+    }
 
+    @Override
+    public int deleteMenu(MenuVO menuVO) {
+        return menuDAO.deleteById(MapStruct.INSTANCE.MenuVOToMenuDO(menuVO));
+    }
 }
