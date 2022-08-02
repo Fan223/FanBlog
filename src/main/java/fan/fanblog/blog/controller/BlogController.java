@@ -19,6 +19,11 @@ public class BlogController {
         return BlogResult.success(blogService.queryAllBlog());
     }
 
+    @GetMapping("/queryBlogByMenuId")
+    public BlogResult queryBlogByMenuId(@RequestParam("menuId") String menuId) {
+        return BlogResult.success(blogService.queryBlogByMenuId(menuId));
+    }
+
     @PostMapping("/addBlog")
     public BlogResult add(@RequestBody BlogVO blogVO) {
         return BlogResult.success(blogService.addBlog(blogVO));

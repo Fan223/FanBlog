@@ -10,4 +10,6 @@ public interface BlogService extends IService<BlogDO> {
     List<BlogVO> queryAllBlog();
 
     int addBlog(BlogVO blogVO);
+
+    BlogVO queryBlogByMenuId(String menuId);
 }

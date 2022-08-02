@@ -33,6 +33,13 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
     }
 
     @Override
+    public BlogVO queryBlogByMenuId(String menuId) {
+        BlogDO blogDO = blogDAO.selectOne(new QueryWrapper<BlogDO>().eq("menu_id", menuId));
+
+        return MapStruct.INSTANCE.BlogDOToBlogVO(blogDO);
+    }
+
+    @Override
     public int addBlog(BlogVO blogVO) {
         BlogDO blogDO = MapStruct.INSTANCE.BlogVOToBlogDO(blogVO);
 
