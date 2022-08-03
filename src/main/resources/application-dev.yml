@@ -9,8 +9,14 @@ spring:
       username: root
       password: fan223
       driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: 124.222.118.90
+    port: 6379
+    password: fan223
+    database: 0
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**Mapper.xml
   configuration:
     local-cache-scope: statement
+

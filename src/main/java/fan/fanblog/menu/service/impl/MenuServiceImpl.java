@@ -26,9 +26,9 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<MenuVO> queryAllMenu() {
-        List<MenuDO> blogDOS = menuDAO.selectList(new QueryWrapper<MenuDO>().orderByAsc("order_num"));
+        List<MenuDO> menuDOS = menuDAO.selectList(new QueryWrapper<MenuDO>().orderByAsc("order_num"));
 
-        List<MenuVO> menuVOS = blogDOS.stream().map(menuDO -> MapStruct.INSTANCE.MenuDOToMenuVO(menuDO))
+        List<MenuVO> menuVOS = menuDOS.stream().map(menuDO -> MapStruct.INSTANCE.MenuDOToMenuVO(menuDO))
                 .collect(Collectors.toList());
 
         return buildMenuTree(menuVOS);

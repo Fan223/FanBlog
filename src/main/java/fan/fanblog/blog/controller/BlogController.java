@@ -25,7 +25,12 @@ public class BlogController {
     }
 
     @PostMapping("/addBlog")
-    public BlogResult add(@RequestBody BlogVO blogVO) {
+    public BlogResult addBlog(@RequestBody BlogVO blogVO) {
         return BlogResult.success(blogService.addBlog(blogVO));
+    }
+
+    @PostMapping("/saveBlog")
+    public BlogResult saveBlog(@RequestBody BlogVO blogVO) {
+        return BlogResult.success("保存成功", blogService.saveBlog(blogVO));
     }
 }

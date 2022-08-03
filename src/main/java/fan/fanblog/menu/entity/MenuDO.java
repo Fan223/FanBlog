@@ -3,6 +3,7 @@ package fan.fanblog.menu.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.sql.Timestamp;
 
 @Data
 @TableName("menu")
+@Builder
 public class MenuDO implements Serializable {
 
   private static final long serialVersionUID = 1L;
