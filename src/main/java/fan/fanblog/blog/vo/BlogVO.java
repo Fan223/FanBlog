@@ -14,6 +14,7 @@ public class BlogVO implements Serializable {
     private String menuId;
     private String title;
     private String content;
+    private int orderNum;
     private String createTime;
     private String updateTime;
 }

@@ -7,6 +7,7 @@ import fan.fanblog.menu.entity.MenuDO;
 import fan.fanblog.menu.service.MenuService;
 import fan.fanblog.menu.vo.MenuVO;
 import fan.fanblog.utils.MapStruct;
+import fan.fanblog.utils.RedisUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,12 +25,16 @@ public class MenuServiceImpl implements MenuService {
     @Resource
     private MenuDAO menuDAO;
 
+    @Resource
+    private RedisUtil redisUtil;
+
     @Override
     public List<MenuVO> queryAllMenu() {
         List<MenuDO> menuDOS = menuDAO.selectList(new QueryWrapper<MenuDO>().orderByAsc("order_num"));
 
         List<MenuVO> menuVOS = menuDOS.stream().map(menuDO -> MapStruct.INSTANCE.MenuDOToMenuVO(menuDO))
                 .collect(Collectors.toList());
+        redisUtil.set("menuList", menuVOS.stream().map(menuVO -> menuVO.getMenuId()).collect(Collectors.toList()));
 
         return buildMenuTree(menuVOS);
     }

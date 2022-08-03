@@ -51,18 +51,47 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
     }
     @Override
     public int addBlog(BlogVO blogVO) {
-//        if (BlogLoader.blogIds.contains(blogVO.getBlogId())) {
-//            return this.updateBlog(blogVO);
-//        }
+        List<String> blogIds = (List<String>) redisUtil.get("blogIds");
+        if (CollectionUtils.isEmpty(blogIds)) {
+            blogIds = queryAllBlog().stream().map(blogVO1 -> blogVO1.getBlogId()).collect(Collectors.toList());
+            redisUtil.set("blogIds", blogIds);
+        }
 
-        String uuid = UUID.randomUUID().toString();
+        if (blogIds.contains(blogVO.getBlogId())) {
+            return updateBlog(blogVO);
+        }
 
+        // 设置统一的 menuId 和 时间
+        String blogId = UUID.randomUUID().toString();
+        String menuId = UUID.randomUUID().toString();
+        Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
+
+        // 添加博客对应的菜单
+        MenuDO menuDO = MenuDO.builder().menuId(menuId)
+                .parentId(blogVO.getMenuId())
+                .menuName(blogVO.getTitle())
+                .path("/blog/preview")
+                .component("blog/Preview")
+                .type(3)
+                .orderNum(1)
+                .valiFlag(1)
+                .createTime(timestamp)
+                .updateTime(timestamp)
+                .build();
+        menuDAO.insert(menuDO);
+
+        // 添加博客
         BlogDO blogDO = MapStruct.INSTANCE.BlogVOToBlogDO(blogVO);
-        blogDO.setBlogId(uuid);
-        blogDO.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
-        blogDO.setUpdateTime(Timestamp.valueOf(LocalDateTime.now()));
+        blogDO.setBlogId(blogId);
+        blogDO.setMenuId(menuId);
+        blogDO.setCreateTime(timestamp);
+        blogDO.setUpdateTime(timestamp);
 
-        return blogDAO.insert(blogDO);
+        int insertResult = blogDAO.insert(blogDO);
+        blogIds.add(blogId);
+        redisUtil.set("blogIds", blogIds);
+
+        return insertResult;
     }
 
     @Override
