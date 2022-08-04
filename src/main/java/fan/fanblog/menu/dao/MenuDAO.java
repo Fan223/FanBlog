@@ -5,4 +5,5 @@ import fan.fanblog.menu.entity.MenuDO;
 
 public interface MenuDAO extends BaseMapper<MenuDO> {
 
+    void updateParentId(String menuId, String parentId);
 }

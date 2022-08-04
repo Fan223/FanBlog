@@ -9,7 +9,7 @@ public interface MenuService {
 
     int addMenu(MenuVO blogVO);
 
-    int editMenu(MenuVO menuVO);
+    int updateMenu(MenuVO menuVO);
 
     int deleteMenu(MenuVO menuVO);
 }

@@ -13,5 +13,5 @@ public interface BlogService extends IService<BlogDO> {
 
     BlogVO queryBlogByMenuId(String menuId);
 
-    String saveBlog(BlogVO blogVO);
+    BlogVO saveBlog(BlogVO blogVO);
 }

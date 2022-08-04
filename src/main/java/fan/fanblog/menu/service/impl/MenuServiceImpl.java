@@ -2,6 +2,8 @@ package fan.fanblog.menu.service.impl;
 
 import cn.hutool.core.lang.UUID;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import fan.fanblog.blog.dao.BlogDAO;
+import fan.fanblog.blog.entity.BlogDO;
 import fan.fanblog.menu.dao.MenuDAO;
 import fan.fanblog.menu.entity.MenuDO;
 import fan.fanblog.menu.service.MenuService;
@@ -10,6 +12,7 @@ import fan.fanblog.utils.MapStruct;
 import fan.fanblog.utils.RedisUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
@@ -24,6 +27,9 @@ public class MenuServiceImpl implements MenuService {
 
     @Resource
     private MenuDAO menuDAO;
+
+    @Resource
+    private BlogDAO blogDAO;
 
     @Resource
     private RedisUtil redisUtil;
@@ -57,6 +63,7 @@ public class MenuServiceImpl implements MenuService {
         return menuTree;
     }
 
+    @Transactional
     @Override
     public int addMenu(MenuVO menuVO) {
         MenuDO menuDO = MapStruct.INSTANCE.MenuVOToMenuDO(menuVO);
@@ -73,15 +80,21 @@ public class MenuServiceImpl implements MenuService {
         return menuDAO.insert(menuDO);
     }
 
+    @Transactional
     @Override
-    public int editMenu(MenuVO menuVO) {
+    public int updateMenu(MenuVO menuVO) {
         MenuDO menuDO = MapStruct.INSTANCE.MenuVOToMenuDO(menuVO);
+        if (StringUtils.isBlank(menuVO.getParentId())) {
+            menuDO.setParentId("0");
+        }
         menuDO.setUpdateTime(Timestamp.valueOf(LocalDateTime.now()));
+
         return menuDAO.updateById(menuDO);
     }
 
     @Override
     public int deleteMenu(MenuVO menuVO) {
+        blogDAO.delete(new QueryWrapper<BlogDO>().eq("menu_id", menuVO.getMenuId()));
         return menuDAO.deleteById(MapStruct.INSTANCE.MenuVOToMenuDO(menuVO));
     }
 }

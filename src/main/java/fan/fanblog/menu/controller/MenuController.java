@@ -24,9 +24,9 @@ public class MenuController {
         return BlogResult.success(menuService.addMenu(menuVO));
     }
 
-    @PutMapping("/editMenu")
-    public BlogResult editMenu(@RequestBody MenuVO menuVO) {
-        return BlogResult.success(menuService.editMenu(menuVO));
+    @PutMapping("/updateMenu")
+    public BlogResult updateMenu(@RequestBody MenuVO menuVO) {
+        return BlogResult.success(menuService.updateMenu(menuVO));
     }
 
     @DeleteMapping("/deleteMenu")
