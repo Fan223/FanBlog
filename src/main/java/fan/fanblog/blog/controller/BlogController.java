@@ -33,4 +33,9 @@ public class BlogController {
     public BlogResult saveBlog(@RequestBody BlogVO blogVO) {
         return BlogResult.success("保存成功", blogService.saveBlog(blogVO));
     }
+
+    @DeleteMapping("/deleteBlog")
+    public BlogResult deleteBlog(@RequestBody BlogVO blogVO) {
+        return BlogResult.success("删除成功", blogService.deleteBlog(blogVO));
+    }
 }

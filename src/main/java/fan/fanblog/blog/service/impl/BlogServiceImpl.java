@@ -14,6 +14,7 @@ import fan.fanblog.blog.vo.BlogVO;
 import fan.fanblog.utils.RedisUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.awt.*;
@@ -68,6 +69,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
         return blogIds;
     }
 
+    @Transactional
     @Override
     public int addBlog(BlogVO blogVO) {
         List<String> blogIds = getBlogIds();
@@ -80,6 +82,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
         return addResult;
     }
 
+    @Transactional
     @Override
     public BlogVO saveBlog(BlogVO blogVO) {
         List<String> blogIds = getBlogIds();
@@ -90,6 +93,13 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
 
         saveOrAddBlogAndMenu(blogVO, blogIds, "save");
         return blogVO;
+    }
+
+    @Override
+    public int deleteBlog(BlogVO blogVO) {
+        int deleteResult = blogDAO.deleteById(blogVO.getBlogId());
+        menuDAO.deleteById(blogVO.getMenuId());
+        return deleteResult;
     }
 
     private int saveOrAddBlogAndMenu(BlogVO blogVO, List<String> blogIds, String flag) {
