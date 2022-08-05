@@ -100,7 +100,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
 
         // 添加博客对应的菜单
         if (flag.equals("save")) {
-            MenuDO menuDO = MenuDO.builder().menuId(menuId).parentId("0bd8151e-594c-4aa3-abf8-0ad6b29bc832")
+            MenuDO menuDO = MenuDO.builder().menuId(menuId).parentId("fb90460f-43b4-4225-bc23-9380a13bd813")
                     .menuName(blogVO.getTitle()).path("/blog/preview").component("blog/Preview")
                     .type(3).orderNum(1).valiFlag(1).createTime(timestamp).updateTime(timestamp).build();
             menuDAO.insert(menuDO);
