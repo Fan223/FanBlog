@@ -129,8 +129,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
         blogDO.setUpdateTime(timestamp);
 
         int addResult = blogDAO.insert(blogDO);
-        blogIds.add(blogId);
-        redisUtil.set("blogIds", blogIds);
+        redisUtil.set("blogIds", blogIds.add(blogId));
 
         return addResult;
     }
