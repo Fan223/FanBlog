@@ -1,5 +1,6 @@
 package fan.fanblog.utils;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import fan.fanblog.blog.entity.BlogDO;
 import fan.fanblog.blog.vo.BlogVO;
 import fan.fanblog.menu.entity.MenuDO;
@@ -27,4 +28,6 @@ public interface MapStruct {
     @Mapping(target = "createTime", ignore = true)
     @Mapping(target = "updateTime", ignore = true)
     MenuDO MenuVOToMenuDO(MenuVO menuVO);
+
+    Page<BlogVO> BlogDOPageToBlogVOPage(Page<BlogDO> blogDOPage);
 }

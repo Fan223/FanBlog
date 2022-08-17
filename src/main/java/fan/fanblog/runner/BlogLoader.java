@@ -24,7 +24,7 @@ public class BlogLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        List<BlogVO> blogVOS = blogService.queryAllBlog();
+        List<BlogVO> blogVOS = blogService.queryAllBlog().getRecords();
         List<String> blogIds = blogVOS.stream().map(blogVO -> blogVO.getBlogId()).collect(Collectors.toList());
 
         redisUtil.set("blogIds", blogIds);

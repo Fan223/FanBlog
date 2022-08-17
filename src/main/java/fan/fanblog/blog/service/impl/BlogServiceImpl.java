@@ -2,6 +2,7 @@ package fan.fanblog.blog.service.impl;
 
 import cn.hutool.core.lang.UUID;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import fan.fanblog.blog.dao.BlogDAO;
 import fan.fanblog.blog.entity.BlogDO;
@@ -37,20 +38,13 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
     private RedisUtil redisUtil;
 
     @Override
-    public List<BlogVO> queryAllBlog() {
-        List<BlogDO> blogDOS = blogDAO.selectList(new QueryWrapper<>());
-        List<MenuDO> menuDOS = menuDAO.selectList(new QueryWrapper<>());
-        Map<String, MenuDO> menuMap = menuDOS.stream().collect(Collectors.toMap(MenuDO::getMenuId, MenuDO -> MenuDO));
+    public Page<BlogVO> queryAllBlog() {
+        Page<BlogDO> blogDOPage = blogDAO.selectPage(new Page<>(1, 10), new QueryWrapper<>());
+        Page<BlogVO> blogVOPage = MapStruct.INSTANCE.BlogDOPageToBlogVOPage(blogDOPage);
 
-        List<BlogVO> blogVOS = blogDOS.stream().map(blogDO -> {
-                    BlogVO blogVO = MapStruct.INSTANCE.BlogDOToBlogVO(blogDO);
-                    if (menuMap.containsKey(blogDO.getBlogId())) {
-                        blogVO.setMenuName(menuMap.get(menuMap.get(blogDO.getBlogId()).getParentId()).getMenuName());
-                    }
-                    return blogVO;
-                }).collect(Collectors.toList());
 
-        return blogVOS;
+
+        return blogVOPage;
     }
 
     @Override
@@ -63,7 +57,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
     private List<String> getBlogIds() {
         List<String> blogIds = (List<String>) redisUtil.get("blogIds");
         if (CollectionUtils.isEmpty(blogIds)) {
-            blogIds = queryAllBlog().stream().map(blogVO -> blogVO.getBlogId()).collect(Collectors.toList());
+            blogIds = queryAllBlog().getRecords().stream().map(blogVO -> blogVO.getBlogId()).collect(Collectors.toList());
             redisUtil.set("blogIds", blogIds);
         }
         return blogIds;
