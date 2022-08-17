@@ -5,15 +5,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import fan.fanblog.blog.dao.BlogDAO;
+import fan.fanblog.blog.dto.BlogDTO;
 import fan.fanblog.blog.entity.BlogDO;
 import fan.fanblog.blog.service.BlogService;
 import fan.fanblog.menu.dao.MenuDAO;
 import fan.fanblog.menu.entity.MenuDO;
-import fan.fanblog.runner.BlogLoader;
 import fan.fanblog.utils.MapStruct;
 import fan.fanblog.blog.vo.BlogVO;
 import fan.fanblog.utils.RedisUtil;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ import javax.annotation.Resource;
 import java.awt.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,13 +40,13 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
     private RedisUtil redisUtil;
 
     @Override
-    public Page<BlogVO> queryAllBlog() {
-        Page<BlogDO> blogDOPage = blogDAO.selectPage(new Page<>(1, 10), new QueryWrapper<>());
-        Page<BlogVO> blogVOPage = MapStruct.INSTANCE.BlogDOPageToBlogVOPage(blogDOPage);
+    public Page<BlogVO> queryBlog(BlogDTO blogDTO) {
+        QueryWrapper<BlogDO> blogDOQueryWrapper = new QueryWrapper<BlogDO>()
+                .like(StringUtils.isNotBlank(blogDTO.getTitle()), "title", blogDTO.getTitle());
 
+        Page<BlogDO> blogDOPage = blogDAO.selectPage(new Page<>(blogDTO.getCurrent(), blogDTO.getSize()), blogDOQueryWrapper);
 
-
-        return blogVOPage;
+        return MapStruct.INSTANCE.BlogDOPageToBlogVOPage(blogDOPage);
     }
 
     @Override
@@ -57,7 +59,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
     private List<String> getBlogIds() {
         List<String> blogIds = (List<String>) redisUtil.get("blogIds");
         if (CollectionUtils.isEmpty(blogIds)) {
-            blogIds = queryAllBlog().getRecords().stream().map(blogVO -> blogVO.getBlogId()).collect(Collectors.toList());
+            blogIds = queryBlog(new BlogDTO()).getRecords().stream().map(blogVO -> blogVO.getBlogId()).collect(Collectors.toList());
             redisUtil.set("blogIds", blogIds);
         }
         return blogIds;

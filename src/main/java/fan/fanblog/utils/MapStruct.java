@@ -30,4 +30,6 @@ public interface MapStruct {
     MenuDO MenuVOToMenuDO(MenuVO menuVO);
 
     Page<BlogVO> BlogDOPageToBlogVOPage(Page<BlogDO> blogDOPage);
+
+    Page<MenuVO> MenuDOPageToMenuVOPage(Page<MenuDO> menuDOPage);
 }

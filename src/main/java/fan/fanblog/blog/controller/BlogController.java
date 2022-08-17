@@ -1,5 +1,6 @@
 package fan.fanblog.blog.controller;
 
+import fan.fanblog.blog.dto.BlogDTO;
 import fan.fanblog.blog.service.BlogService;
 import fan.fanblog.utils.BlogResult;
 import fan.fanblog.blog.vo.BlogVO;
@@ -14,9 +15,9 @@ public class BlogController {
     @Resource
     private BlogService blogService;
 
-    @GetMapping("/queryAllBlog")
-    public BlogResult queryAllBlog() {
-        return BlogResult.success(blogService.queryAllBlog());
+    @GetMapping("/queryBlog")
+    public BlogResult queryBlog(BlogDTO blogDTO) {
+        return BlogResult.success(blogService.queryBlog(blogDTO));
     }
 
     @GetMapping("/queryBlogByMenuId")
