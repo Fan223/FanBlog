@@ -44,8 +44,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
 
         List<BlogVO> blogVOS = blogDOS.stream().map(blogDO -> {
                     BlogVO blogVO = MapStruct.INSTANCE.BlogDOToBlogVO(blogDO);
-                    if (menuMap.containsKey(blogDO.getMenuId())) {
-                        blogVO.setMenuName(menuMap.get(menuMap.get(blogDO.getMenuId()).getParentId()).getMenuName());
+                    if (menuMap.containsKey(blogDO.getBlogId())) {
+                        blogVO.setMenuName(menuMap.get(menuMap.get(blogDO.getBlogId()).getParentId()).getMenuName());
                     }
                     return blogVO;
                 }).collect(Collectors.toList());
@@ -55,7 +55,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
 
     @Override
     public BlogVO queryBlogByMenuId(String menuId) {
-        BlogDO blogDO = blogDAO.selectOne(new QueryWrapper<BlogDO>().eq("menu_id", menuId));
+        BlogDO blogDO = blogDAO.selectOne(new QueryWrapper<BlogDO>().eq("blog_id", menuId));
 
         return MapStruct.INSTANCE.BlogDOToBlogVO(blogDO);
     }
@@ -74,7 +74,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
     public int addBlog(BlogVO blogVO) {
         List<String> blogIds = getBlogIds();
         if (blogIds.contains(blogVO.getBlogId())) {
-            menuDAO.updateParentId(blogVO.getMenuId(), blogVO.getParentId());
+            menuDAO.updateParentId(blogVO.getBlogId(), blogVO.getParentId());
             return updateBlog(blogVO);
         }
 
@@ -98,24 +98,23 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
     @Override
     public int deleteBlog(BlogVO blogVO) {
         int deleteResult = blogDAO.deleteById(blogVO.getBlogId());
-        menuDAO.deleteById(blogVO.getMenuId());
+        menuDAO.deleteById(blogVO.getBlogId());
         return deleteResult;
     }
 
     private int saveOrAddBlogAndMenu(BlogVO blogVO, List<String> blogIds, String flag) {
         // 设置统一的 Id 和 时间
         String blogId = UUID.randomUUID().toString();
-        String menuId = UUID.randomUUID().toString();
         Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
 
         // 添加博客对应的菜单
         if (flag.equals("save")) {
-            MenuDO menuDO = MenuDO.builder().menuId(menuId).parentId("fb90460f-43b4-4225-bc23-9380a13bd813")
+            MenuDO menuDO = MenuDO.builder().menuId(blogId).parentId("fb90460f-43b4-4225-bc23-9380a13bd813")
                     .menuName(blogVO.getTitle()).path("/blog/preview").component("blog/Preview")
                     .type(3).orderNum(1).valiFlag(1).createTime(timestamp).updateTime(timestamp).build();
             menuDAO.insert(menuDO);
         } else {
-            MenuDO menuDO = MenuDO.builder().menuId(menuId).parentId(blogVO.getParentId())
+            MenuDO menuDO = MenuDO.builder().menuId(blogId).parentId(blogVO.getParentId())
                     .menuName(blogVO.getTitle()).path("/blog/preview").component("blog/Preview")
                     .type(3).orderNum(1).valiFlag(1).createTime(timestamp).updateTime(timestamp).build();
             menuDAO.insert(menuDO);
@@ -123,7 +122,6 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
 
         // 添加博客
         blogVO.setBlogId(blogId);
-        blogVO.setMenuId(menuId);
         BlogDO blogDO = MapStruct.INSTANCE.BlogVOToBlogDO(blogVO);
         blogDO.setCreateTime(timestamp);
         blogDO.setUpdateTime(timestamp);

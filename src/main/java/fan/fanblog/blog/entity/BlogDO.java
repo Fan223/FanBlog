@@ -15,7 +15,6 @@ public class BlogDO implements Serializable {
 
     @TableId
     private String blogId;
-    private String menuId;
     private String title;
     private String content;
     private Timestamp createTime;

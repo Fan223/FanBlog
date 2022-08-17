@@ -94,7 +94,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public int deleteMenu(MenuVO menuVO) {
-        blogDAO.delete(new QueryWrapper<BlogDO>().eq("menu_id", menuVO.getMenuId()));
+        blogDAO.delete(new QueryWrapper<BlogDO>().eq("blog_id", menuVO.getMenuId()));
         return menuDAO.deleteById(MapStruct.INSTANCE.MenuVOToMenuDO(menuVO));
     }
 }
