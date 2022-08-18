@@ -8,8 +8,8 @@ import fan.fanblog.blog.dao.BlogDAO;
 import fan.fanblog.blog.dto.BlogDTO;
 import fan.fanblog.blog.entity.BlogDO;
 import fan.fanblog.blog.service.BlogService;
-import fan.fanblog.menu.dao.MenuDAO;
-import fan.fanblog.menu.entity.MenuDO;
+import fan.fanblog.menu.service.MenuService;
+import fan.fanblog.menu.vo.MenuVO;
 import fan.fanblog.utils.MapStruct;
 import fan.fanblog.blog.vo.BlogVO;
 import fan.fanblog.utils.RedisUtil;
@@ -23,6 +23,7 @@ import java.awt.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,15 +35,17 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
     private BlogDAO blogDAO;
 
     @Resource
-    private MenuDAO menuDAO;
+    private MenuService menuService;
 
     @Resource
     private RedisUtil redisUtil;
 
     @Override
     public Page<BlogVO> queryBlog(BlogDTO blogDTO) {
+        List<String> idList = menuService.getMenuIdByParentId(blogDTO.getCategory());
         QueryWrapper<BlogDO> blogDOQueryWrapper = new QueryWrapper<BlogDO>()
-                .like(StringUtils.isNotBlank(blogDTO.getTitle()), "title", blogDTO.getTitle());
+                .like(StringUtils.isNotBlank(blogDTO.getTitle()), "title", blogDTO.getTitle())
+                .in(CollectionUtils.isNotEmpty(idList), "blog_id", idList);
 
         Page<BlogDO> blogDOPage = blogDAO.selectPage(new Page<>(blogDTO.getCurrent(), blogDTO.getSize()), blogDOQueryWrapper);
 
@@ -59,7 +62,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
     private List<String> getBlogIds() {
         List<String> blogIds = (List<String>) redisUtil.get("blogIds");
         if (CollectionUtils.isEmpty(blogIds)) {
-            blogIds = queryBlog(new BlogDTO()).getRecords().stream().map(blogVO -> blogVO.getBlogId()).collect(Collectors.toList());
+            blogIds = blogDAO.selectList(new QueryWrapper<>()).stream().map(blogDO -> blogDO.getBlogId()).collect(Collectors.toList());
             redisUtil.set("blogIds", blogIds);
         }
         return blogIds;
@@ -70,7 +73,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
     public int addBlog(BlogVO blogVO) {
         List<String> blogIds = getBlogIds();
         if (blogIds.contains(blogVO.getBlogId())) {
-            menuDAO.updateParentId(blogVO.getBlogId(), blogVO.getParentId());
+            menuService.updateParentId(blogVO.getBlogId(), blogVO.getParentId());
             return updateBlog(blogVO);
         }
 
@@ -92,9 +95,10 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
     }
 
     @Override
-    public int deleteBlog(BlogVO blogVO) {
-        int deleteResult = blogDAO.deleteById(blogVO.getBlogId());
-        menuDAO.deleteById(blogVO.getBlogId());
+    public int deleteBlog(ArrayList<String> idList) {
+        int deleteResult = blogDAO.deleteBatchIds(idList);
+        menuService.deleteMenu(idList);
+
         return deleteResult;
     }
 
@@ -105,20 +109,20 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
 
         // 添加博客对应的菜单
         if (flag.equals("save")) {
-            MenuDO menuDO = MenuDO.builder().menuId(blogId).parentId("fb90460f-43b4-4225-bc23-9380a13bd813")
+            MenuVO menuVO = MenuVO.builder().menuId(blogId).parentId("fb90460f-43b4-4225-bc23-9380a13bd813")
                     .menuName(blogVO.getTitle()).path("/blog/preview").component("blog/Preview")
-                    .type(3).orderNum(1).valiFlag(1).createTime(timestamp).updateTime(timestamp).build();
-            menuDAO.insert(menuDO);
+                    .type(3).orderNum(1).build();
+            menuService.addMenu(menuVO);
         } else {
-            MenuDO menuDO = MenuDO.builder().menuId(blogId).parentId(blogVO.getParentId())
+            MenuVO menuVO = MenuVO.builder().menuId(blogId).parentId(blogVO.getParentId())
                     .menuName(blogVO.getTitle()).path("/blog/preview").component("blog/Preview")
-                    .type(3).orderNum(1).valiFlag(1).createTime(timestamp).updateTime(timestamp).build();
-            menuDAO.insert(menuDO);
+                    .type(3).orderNum(1).build();
+            menuService.addMenu(menuVO);
         }
 
         // 添加博客
-        blogVO.setBlogId(blogId);
         BlogDO blogDO = MapStruct.INSTANCE.BlogVOToBlogDO(blogVO);
+        blogDO.setBlogId(blogId);
         blogDO.setCreateTime(timestamp);
         blogDO.setUpdateTime(timestamp);
 

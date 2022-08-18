@@ -11,6 +11,7 @@ import lombok.Data;
 @Data
 public class BlogDTO {
     private String title;
+    private String category;
     private int current = 1;
     private int size = 5;
 }

@@ -1,9 +1,11 @@
 package fan.fanblog.menu.service.impl;
 
 import cn.hutool.core.lang.UUID;
+import cn.hutool.log.Log;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import fan.fanblog.blog.dao.BlogDAO;
 import fan.fanblog.blog.entity.BlogDO;
+import fan.fanblog.blog.service.BlogService;
 import fan.fanblog.menu.dao.MenuDAO;
 import fan.fanblog.menu.entity.MenuDO;
 import fan.fanblog.menu.service.MenuService;
@@ -13,7 +15,6 @@ import fan.fanblog.utils.RedisUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
@@ -68,7 +69,9 @@ public class MenuServiceImpl implements MenuService {
     public int addMenu(MenuVO menuVO) {
         MenuDO menuDO = MapStruct.INSTANCE.MenuVOToMenuDO(menuVO);
 
-        menuDO.setMenuId(UUID.randomUUID().toString());
+        if (StringUtils.isBlank(menuDO.getMenuId())) {
+            menuDO.setMenuId(UUID.randomUUID().toString());
+        }
         menuDO.setValiFlag(1);
         menuDO.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
         menuDO.setUpdateTime(Timestamp.valueOf(LocalDateTime.now()));
@@ -93,8 +96,26 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public int deleteMenu(MenuVO menuVO) {
-        blogDAO.delete(new QueryWrapper<BlogDO>().eq("blog_id", menuVO.getMenuId()));
-        return menuDAO.deleteById(MapStruct.INSTANCE.MenuVOToMenuDO(menuVO));
+    public int deleteMenu(ArrayList<String> idList) {
+        blogDAO.deleteBatchIds(idList);
+        return menuDAO.deleteBatchIds(idList);
+    }
+
+    @Override
+    public List<MenuVO> getCategory() {
+        List<MenuDO> menuDOS = menuDAO.selectList(new QueryWrapper<MenuDO>().eq("type", 1).eq("permission", ""));
+        return MapStruct.INSTANCE.MenuDOListToMenuVOList(menuDOS);
+    }
+
+    @Override
+    public List<String> getMenuIdByParentId(String parentId) {
+
+        return menuDAO.selectList(new QueryWrapper<MenuDO>().eq("parent_id", parentId)).stream()
+                .map(menuDO -> menuDO.getMenuId()).collect(Collectors.toList());
+    }
+
+    @Override
+    public void updateParentId(String menuId, String parentId) {
+        menuDAO.updateParentId(menuId, parentId);
     }
 }

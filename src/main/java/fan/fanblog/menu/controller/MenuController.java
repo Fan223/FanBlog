@@ -6,6 +6,8 @@ import fan.fanblog.utils.BlogResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/menu")
@@ -30,7 +32,12 @@ public class MenuController {
     }
 
     @DeleteMapping("/deleteMenu")
-    public BlogResult deleteMenu(@RequestBody MenuVO menuVO) {
-        return BlogResult.success(menuService.deleteMenu(menuVO));
+    public BlogResult deleteMenu(@RequestBody ArrayList<String> idList) {
+        return BlogResult.success(menuService.deleteMenu(idList));
+    }
+
+    @GetMapping("/getCategory")
+    public BlogResult getCategory() {
+        return BlogResult.success(menuService.getCategory());
     }
 }

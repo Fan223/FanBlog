@@ -6,6 +6,7 @@ import fan.fanblog.blog.dto.BlogDTO;
 import fan.fanblog.blog.entity.BlogDO;
 import fan.fanblog.blog.vo.BlogVO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface BlogService extends IService<BlogDO> {
@@ -17,5 +18,5 @@ public interface BlogService extends IService<BlogDO> {
 
     BlogVO saveBlog(BlogVO blogVO);
 
-    int deleteBlog(BlogVO blogVO);
+    int deleteBlog(ArrayList<String> idList);
 }

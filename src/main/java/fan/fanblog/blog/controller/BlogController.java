@@ -7,6 +7,8 @@ import fan.fanblog.blog.vo.BlogVO;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/blog")
@@ -36,7 +38,7 @@ public class BlogController {
     }
 
     @DeleteMapping("/deleteBlog")
-    public BlogResult deleteBlog(@RequestBody BlogVO blogVO) {
-        return BlogResult.success("删除成功", blogService.deleteBlog(blogVO));
+    public BlogResult deleteBlog(@RequestBody ArrayList<String> idList) {
+        return BlogResult.success("删除成功", blogService.deleteBlog(idList));
     }
 }
