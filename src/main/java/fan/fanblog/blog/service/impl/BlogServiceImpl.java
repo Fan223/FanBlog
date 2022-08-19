@@ -77,8 +77,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
             return updateBlog(blogVO);
         }
 
-        int addResult = saveOrAddBlogAndMenu(blogVO, blogIds, "add");
-        return addResult;
+        saveOrAddBlogAndMenu(blogVO, blogIds, "add");
+        return 1;
     }
 
     @Transactional
@@ -90,7 +90,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
             return blogVO;
         }
 
-        saveOrAddBlogAndMenu(blogVO, blogIds, "save");
+        blogVO.setBlogId(saveOrAddBlogAndMenu(blogVO, blogIds, "save"));
         return blogVO;
     }
 
@@ -102,7 +102,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
         return deleteResult;
     }
 
-    private int saveOrAddBlogAndMenu(BlogVO blogVO, List<String> blogIds, String flag) {
+    private String saveOrAddBlogAndMenu(BlogVO blogVO, List<String> blogIds, String flag) {
         // 设置统一的 Id 和 时间
         String blogId = UUID.randomUUID().toString();
         Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
@@ -126,11 +126,11 @@ public class BlogServiceImpl extends ServiceImpl<BlogDAO, BlogDO> implements Blo
         blogDO.setCreateTime(timestamp);
         blogDO.setUpdateTime(timestamp);
 
-        int addResult = blogDAO.insert(blogDO);
+        blogDAO.insert(blogDO);
         blogIds.add(blogId);
         redisUtil.set("blogIds", blogIds);
 
-        return addResult;
+        return blogId;
     }
 
     public int updateBlog(BlogVO blogVO) {
