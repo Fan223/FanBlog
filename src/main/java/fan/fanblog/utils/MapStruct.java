@@ -5,6 +5,8 @@ import fan.fanblog.blog.entity.BlogDO;
 import fan.fanblog.blog.vo.BlogVO;
 import fan.fanblog.menu.entity.MenuDO;
 import fan.fanblog.menu.vo.MenuVO;
+import fan.fanblog.user.entity.UserDO;
+import fan.fanblog.user.vo.UserVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -34,4 +36,6 @@ public interface MapStruct {
     Page<BlogVO> BlogDOPageToBlogVOPage(Page<BlogDO> blogDOPage);
 
     List<MenuVO> MenuDOListToMenuVOList(List<MenuDO> menuDOList);
+
+    UserVO UserDOToUserVO(UserDO userDO);
 }
