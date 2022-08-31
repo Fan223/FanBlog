@@ -37,13 +37,15 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public Map login(UserVO userVO) {
         String captcha = (String) redisUtil.get("captcha");
-        if (!captcha.equals(userVO.getCaptcha())) {
+        if (!userVO.getCaptcha().equals(captcha)) {
             return MapUtil.builder().put("data", null).put("msg", "验证码错误").build();
         }
         UserDO userDO = userDAO.selectOne(new QueryWrapper<UserDO>().eq("username", userVO.getUsername()));
 
         if (ObjectUtil.isNotEmpty(userDO) && userDO.getPassword().equals(userVO.getPassword())) {
-            return MapUtil.builder().put("data", MapStruct.INSTANCE.UserDOToUserVO(userDO)).put("msg", "登录成功").build();
+            String jwt = UUID.randomUUID().toString();
+            redisUtil.set(userDO.getUsername(), jwt);
+            return MapUtil.builder().put("data", new UserVO(userDO.getUsername(), jwt)).put("msg", "登录成功").build();
         }
         return MapUtil.builder().put("data", null).put("msg", "用户名或密码错误").build();
     }
