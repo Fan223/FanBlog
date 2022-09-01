@@ -44,8 +44,9 @@ public class LoginServiceImpl implements LoginService {
 
         if (ObjectUtil.isNotEmpty(userDO) && userDO.getPassword().equals(userVO.getPassword())) {
             String jwt = UUID.randomUUID().toString();
-            redisUtil.set(userDO.getUsername(), jwt);
-            return MapUtil.builder().put("data", new UserVO(userDO.getUsername(), jwt)).put("msg", "登录成功").build();
+            redisUtil.delete("token-" + userDO.getUsername());
+            redisUtil.set("token-" + userDO.getUsername(), jwt, 60 * 60 * 24 * 3);
+            return MapUtil.builder().put("data", new UserVO(userDO.getUsername(), userDO.getAvatar(), jwt)).put("msg", "登录成功").build();
         }
         return MapUtil.builder().put("data", null).put("msg", "用户名或密码错误").build();
     }

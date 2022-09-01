@@ -16,10 +16,12 @@ public class UserVO implements Serializable {
     private String username;
     private String password;
     private String captcha;
+    private String avatar;
     private String jwt;
 
-    public UserVO(String username, String jwt) {
+    public UserVO(String username,String avatar, String jwt) {
         this.username = username;
+        this.avatar = avatar;
         this.jwt = jwt;
     }
 }
